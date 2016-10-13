@@ -47,6 +47,10 @@ def MAPE(y,h):
     error=100/m*np.sum(error)
     return error
 
+def MSE(y,h):
+    [m,n] = y.shape
+    error
+
 def main():
 
     f = open('Dengue_1_Lag.csv', 'r')           #Ingresamos el nombre del dataset a utilizar
@@ -63,24 +67,28 @@ def main():
     x = np.matrix(data)         #Matriz x (entradas)
 
     [m,n] = x.shape
-    t = random.sample(range(m),round((m*0.6)))
+    t = np.arange(0,round((m*0.6)))
+
     training_ds = x[t,:]        #Matriz con datos de entrenamiento (60% de los datos iniciales)
+    t2 = np.arange((round((m*0.6))),(round((m*0.6))+round((m*0.2))))
+    cv_ds = x[t2,:]            #Matriz con datos de CV
+    t3 = np.arange((round((m*0.6))+round((m*0.2))),m)
+    tests_ds = x[t3,:]       #Matriz con datos de prueba
 
-    t2 = []
-    for element in range(m):
-        if element not in t:
-            t2.append(element)
-
-    tests_ds = x[t2,:]          #Matriz con datos de prueba (40% de los datos iniciales)
     y_training=training_ds[:,n-1]
+    y_cv = cv_ds[:,n-1]
     y_test= tests_ds[:,n-1]
     x = np.delete(x,n-1,1)       #Matriz x (entradas) (vector y eliminado de x)
     training_ds = np.delete(training_ds,n-1,1)
+    cv_ds = np.delete(cv_ds,n-1,1)
     tests_ds = np.delete(tests_ds,n-1,1)
     [training_ds,mean,sigma]=featureNormalize(training_ds) #Normalizar datos del conjunto de entrenamiento
-    tests_ds = testNormalize(tests_ds,mean,sigma)
+    cv_ds = testNormalize(cv_ds,mean,sigma)
+    # Por el momento no se hara uso del conjunto de test
+    # #tests_ds = testNormalize(tests_ds,mean,sigma)
     training_ds=np.concatenate((np.ones((round((m*0.6)),1)),training_ds),axis=1)
-    tests_ds = np.concatenate((np.ones(((m-round((m*0.6))),1)),tests_ds),axis=1)
+    cv_ds=np.concatenate((np.ones((round((m*0.6)),1)),cv_ds),axis=1)
+    # tests_ds = np.concatenate((np.ones(((m-round((m*0.6))),1)),tests_ds),axis=1)
     thetaG_y1 = np.zeros((n,1))
     alpha = 0.09
     iterat = 400
@@ -88,12 +96,10 @@ def main():
     thetaN_y1 = Pseudoinverse(training_ds,y_training)
 
     print ("Thetas calculados por el metodo de Gradiente Descendiente: \n", thetaG_y1)
-    print ("Thetas calculados por el metodo de la Pseudoinversa para Heating load: \n",thetaN_y1)
-    print ("Valor real",y_test)
-    print ("Forecast", np.round(tests_ds*thetaG_y1))
+    print ("Thetas calculados por el metodo de la Pseudoinversa: \n",thetaN_y1)
 
-    """errorG_y1=MAPE(y_test,np.round(tests_ds*thetaG_y1))
-    errorN_y1=MAPE(y_test,np.round(tests_ds*thetaN_y1))"""
+    errorG_y1=MSE(y_test,np.round(cv_ds*thetaG_y1))
+    errorN_y1=MSE(y_test,np.round(cv_ds*thetaN_y1))
 
     plt.figure(1)
     plt.ylabel('Cost J')
@@ -102,9 +108,7 @@ def main():
     plt.plot(J)
     plt.show()
 
-    """print("Error MAPE para predicciones con Gradiente Descendiente",errorG_y1)
-    print("Error MAPE para predicciones con Ecuaciones Normales",errorN_y1)"""
-
-
+    print("Error MAPE para predicciones con Gradiente Descendiente",errorG_y1)
+    print("Error MAPE para predicciones con Ecuaciones Normales",errorN_y1)
 
 main()
