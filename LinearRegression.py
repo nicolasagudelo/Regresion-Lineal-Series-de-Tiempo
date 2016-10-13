@@ -49,7 +49,8 @@ def MAPE(y,h):
 
 def MSE(y,h):
     [m,n] = y.shape
-    error
+    error = (1/m) * sum (np.power((h-y),2))
+    return error
 
 def main():
 
@@ -70,9 +71,9 @@ def main():
     t = np.arange(0,round((m*0.6)))
 
     training_ds = x[t,:]        #Matriz con datos de entrenamiento (60% de los datos iniciales)
-    t2 = np.arange((round((m*0.6))),(round((m*0.6))+round((m*0.2))))
+    t2 = np.arange((round((m*0.6))),(round((m*0.8))))
     cv_ds = x[t2,:]            #Matriz con datos de CV
-    t3 = np.arange((round((m*0.6))+round((m*0.2))),m)
+    t3 = np.arange(round((m*0.8)),m)
     tests_ds = x[t3,:]       #Matriz con datos de prueba
 
     y_training=training_ds[:,n-1]
@@ -87,7 +88,7 @@ def main():
     # Por el momento no se hara uso del conjunto de test
     # #tests_ds = testNormalize(tests_ds,mean,sigma)
     training_ds=np.concatenate((np.ones((round((m*0.6)),1)),training_ds),axis=1)
-    cv_ds=np.concatenate((np.ones((round((m*0.6)),1)),cv_ds),axis=1)
+    cv_ds=np.concatenate((np.ones((round((m*0.2)),1)),cv_ds),axis=1)
     # tests_ds = np.concatenate((np.ones(((m-round((m*0.6))),1)),tests_ds),axis=1)
     thetaG_y1 = np.zeros((n,1))
     alpha = 0.09
@@ -101,6 +102,9 @@ def main():
     errorG_y1=MSE(y_test,np.round(cv_ds*thetaG_y1))
     errorN_y1=MSE(y_test,np.round(cv_ds*thetaN_y1))
 
+    print("Error MSE para predicciones con Gradiente Descendiente",errorG_y1)
+    print("Error MSE para predicciones con Ecuaciones Normales",errorN_y1)
+
     plt.figure(1)
     plt.ylabel('Cost J')
     plt.xlabel('Number of Iterations')
@@ -108,7 +112,5 @@ def main():
     plt.plot(J)
     plt.show()
 
-    print("Error MAPE para predicciones con Gradiente Descendiente",errorG_y1)
-    print("Error MAPE para predicciones con Ecuaciones Normales",errorN_y1)
 
 main()
