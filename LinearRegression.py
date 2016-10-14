@@ -91,7 +91,7 @@ def main():
     cv_ds=np.concatenate((np.ones((round((m*0.2)),1)),cv_ds),axis=1)
     # tests_ds = np.concatenate((np.ones(((m-round((m*0.6))),1)),tests_ds),axis=1)
     thetaG_y1 = np.zeros((n,1))
-    alpha = 0.06
+    alpha = 0.6
     iterat = 600
     [thetaG_y1,J] = gradientDescent(training_ds,y_training,thetaG_y1,alpha,iterat)
     thetaN_y1 = Pseudoinverse(training_ds,y_training)
@@ -110,6 +110,8 @@ def main():
     plt.xlabel('Number of Iterations')
     plt.title('Cambio de la funcion de costo')
     plt.plot(J)
+    figManager = plt.get_current_fig_manager()
+    figManager.window.showMaximized()
     plt.figure(2)
     plt.ylabel('Numero de casos')
     plt.xlabel('Semanas')
@@ -121,6 +123,8 @@ def main():
     plt.plot(cv_ds*thetaN_y1,'g', label = 'Prediccion con EN')
     plt.plot(cv_ds*thetaN_y1,'go')
     plt.legend(bbox_to_anchor = (0.78,1),loc=2)
+    figManager = plt.get_current_fig_manager()
+    figManager.window.showMaximized()
     plt.show()
 
 
