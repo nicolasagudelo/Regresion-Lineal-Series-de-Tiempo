@@ -91,16 +91,16 @@ def main():
     cv_ds=np.concatenate((np.ones((round((m*0.2)),1)),cv_ds),axis=1)
     # tests_ds = np.concatenate((np.ones(((m-round((m*0.6))),1)),tests_ds),axis=1)
     thetaG_y1 = np.zeros((n,1))
-    alpha = 0.09
-    iterat = 400
+    alpha = 0.06
+    iterat = 600
     [thetaG_y1,J] = gradientDescent(training_ds,y_training,thetaG_y1,alpha,iterat)
     thetaN_y1 = Pseudoinverse(training_ds,y_training)
 
     print ("Thetas calculados por el metodo de Gradiente Descendiente: \n", thetaG_y1)
     print ("Thetas calculados por el metodo de la Pseudoinversa: \n",thetaN_y1)
 
-    errorG_y1=MSE(y_test,np.round(cv_ds*thetaG_y1))
-    errorN_y1=MSE(y_test,np.round(cv_ds*thetaN_y1))
+    errorG_y1=MSE(y_cv,np.round(cv_ds*thetaG_y1))
+    errorN_y1=MSE(y_cv,np.round(cv_ds*thetaN_y1))
 
     print("Error MSE para predicciones con Gradiente Descendiente",errorG_y1)
     print("Error MSE para predicciones con Ecuaciones Normales",errorN_y1)
@@ -110,6 +110,17 @@ def main():
     plt.xlabel('Number of Iterations')
     plt.title('Cambio de la funcion de costo')
     plt.plot(J)
+    plt.figure(2)
+    plt.ylabel('Numero de casos')
+    plt.xlabel('Semanas')
+    plt.title('Pronostico vs Valor real')
+    plt.plot(y_cv, 'r', label = 'Valor Real')
+    plt.plot (y_cv,'ro')
+    plt.plot(cv_ds*thetaG_y1,'b', label = 'Prediccion con GD')
+    plt.plot(cv_ds*thetaG_y1,'bo')
+    plt.plot(cv_ds*thetaN_y1,'g', label = 'Prediccion con EN')
+    plt.plot(cv_ds*thetaN_y1,'go')
+    plt.legend(bbox_to_anchor = (0.78,1),loc=2)
     plt.show()
 
 
