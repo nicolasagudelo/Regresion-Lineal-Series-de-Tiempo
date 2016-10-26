@@ -14,6 +14,7 @@ for line in f.readlines():
 x = np.matrix(data)
 
 
+
 x = x.reshape(22,6)             #Los acomodamos de la forma que deseamos
 
 np.savetxt('Chikungunya_6_Lag.csv',x,fmt='%.2i',delimiter=';')       #Los guardamos en un csv

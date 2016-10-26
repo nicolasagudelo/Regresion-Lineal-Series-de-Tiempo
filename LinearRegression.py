@@ -87,8 +87,8 @@ def main():
     cv_ds = testNormalize(cv_ds,mean,sigma)
     # Por el momento no se hara uso del conjunto de test
     # #tests_ds = testNormalize(tests_ds,mean,sigma)
-    training_ds=np.concatenate((np.ones((round((m*0.6)),1)),training_ds),axis=1)
-    cv_ds=np.concatenate((np.ones((round((m*0.2)),1)),cv_ds),axis=1)
+    training_ds=np.concatenate((np.ones((training_ds.size,1)),training_ds),axis=1)
+    cv_ds=np.concatenate((np.ones((cv_ds.size,1)),cv_ds),axis=1)
     # tests_ds = np.concatenate((np.ones(((m-round((m*0.6))),1)),tests_ds),axis=1)
     thetaG_y1 = np.zeros((n,1))
     alpha = 0.6
